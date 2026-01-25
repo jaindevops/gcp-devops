@@ -31,7 +31,7 @@ jobs:
       - name: Authenticate to Google Cloud using Workload Identity Federation
         uses: google-github-actions/auth@v0.4.0
         with:
-          workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/github-actions/providers/github'
+          workload_identity_provider: 'projects/562177972330/locations/global/workloadIdentityPools/github-actions/providers/github'
           service_account: 'github-actions@project-2cf05b93-137c-46fd-bd7.iam.gserviceaccount.com'
 
       - name: Setup Terraform
