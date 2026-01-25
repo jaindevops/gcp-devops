@@ -3,7 +3,7 @@ name: Terraform
 on:
   push:
     branches-ignore: [main, develop]
-    branches: [feature/*]
+    # branches: [feature/*]
     paths:
       - 'terraform/**'
   pull_request:
