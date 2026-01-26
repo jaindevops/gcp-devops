@@ -39,20 +39,10 @@ jobs:
           workload_identity_provider: 'projects/562177972330/locations/global/workloadIdentityPools/github-actions/providers/github'
           service_account: 'github-actions@project-2cf05b93-137c-46fd-bd7.iam.gserviceaccount.com'
 
-      - name: "Inspect OIDC Token Claims"
-        run: |
-          # 1. Request the token from GitHub's internal provider
-          # We use a dummy audience so we don't interfere with real auth
-          OIDC_TOKEN=$(curl -sLS -H "User-Agent: actions/oidc-client" \
-            -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=google-cloud-debug" | jq -r '.value')
-          
-          # 2. Decode the payload (the second part of the JWT)
-          # We use 'sed' to add padding so base64 doesn't complain
-          PAYLOAD=$(echo "$OIDC_TOKEN" | cut -d'.' -f2 | sed 's/-/+/g; s/_/\//g')
-          
-          echo "Your GitHub OIDC Claims:"
-          echo "$PAYLOAD" | base64 -d | jq .
+      - name: Debug OIDC Claims
+        uses: github/actions-oidc-debugger@main
+        with:
+          audience: 'https://iam.googleapis.com/projects/562177972330/locations/global/workloadIdentityPools/github-actions/providers/github'
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
