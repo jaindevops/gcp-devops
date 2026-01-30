@@ -197,15 +197,15 @@ Here is a visual representation of the authentication flow:
 ## 🔍 Troubleshooting & Verification
 ```yaml
 - name: "Print OIDC Claims"
-	run: |
-		# Request a token and decode the payload (requires jq)
-		OIDC_TOKEN=$(curl -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-			"$ACTIONS_ID_TOKEN_REQUEST_URL&aud=google-cloud-verification" | jq -r '.value')
-		
-		# Extract the middle part (the payload) and decode it
-		echo "### START OF CLAIMS ###"
-		echo "$TOKEN" | cut -d'.' -f2 | base64 --decode | jq .
-		echo "### END OF CLAIMS ###"
+  run: |
+    # Request a token and decode the payload (requires jq)
+    OIDC_TOKEN=$(curl -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+     "$ACTIONS_ID_TOKEN_REQUEST_URL&aud=google-cloud-verification" | jq -r '.value')
+
+    # Extract the middle part (the payload) and decode it
+    echo "### START OF CLAIMS ###"
+    echo "$TOKEN" | cut -d'.' -f2 | base64 --decode | jq .
+    echo "### END OF CLAIMS ###"
 ```
 
 **Note:** The JWT consist of three separate parts Header, Payload and Signatire and we are printing here only Payload for troubleshooting.
