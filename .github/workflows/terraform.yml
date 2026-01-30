@@ -39,11 +39,6 @@ jobs:
           workload_identity_provider: 'projects/562177972330/locations/global/workloadIdentityPools/github-actions/providers/github'
           service_account: 'github-actions@project-2cf05b93-137c-46fd-bd7.iam.gserviceaccount.com'
 
-      - name: Debug OIDC Claims
-        uses: github/actions-oidc-debugger@main
-        with:
-          audience: 'https://iam.googleapis.com/projects/562177972330/locations/global/workloadIdentityPools/github-actions/providers/github'
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
