@@ -2,7 +2,12 @@ module "vpc_network" {
   source       = "../modules/network"
   network_name = "demo-vpc-network"
   project_id   = var.project_id
+}
 
+module "vpc_subnetwork" {
+  source       = "../modules/subnetwork"
+  network_name = module.vpc_network.network_name
+  project_id   = var.project_id
   subnetworks = [
     {
       subnet_name           = "demo-subnet",
@@ -10,8 +15,8 @@ module "vpc_network" {
       region                = "us-central1",
       subnet_private_access = true,
       secondary_ranges = {
-        "pods-secondary-range"     = "192.168.0.0/20"
-        "services-secondary-range" = "192.168.16.0/20"
+        "demo-gke-pods-range"     = "10.4.0.0/18",
+        "demo-gke-services-range" = "10.8.0.0/20"
       }
     },
     {

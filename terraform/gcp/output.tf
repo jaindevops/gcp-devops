@@ -10,5 +10,5 @@ output "network_name" {
 
 output "subnet_names" {
   description = "The names of the subnetworks created in the VPC network"
-  value       = module.vpc_network.subnet_names
+  value       = module.vpc_subnetwork.subnet_names
 }
