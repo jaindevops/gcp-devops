@@ -13,21 +13,21 @@ output "subnet_names_local" {
   value       = local.subnet_names
 }
 
-# output "subnetworks" {
-#   description = "The list of subnetworks created in the VPC network"
-#   value = [
-#     for subnet in google_compute_subnetwork.vpc_subnets :
-#     {
-#       name    = subnet.name
-#       region  = subnet.region
-#       ip_cidr = subnet.ip_cidr_range
-#       secondary_ip_ranges = subnet.secondary_ip_range != null ? [
-#         for range in subnet.secondary_ip_range :
-#         {
-#           range_name    = range.range_name
-#           ip_cidr_range = range.ip_cidr_range
-#         }
-#       ] : []
-#     }
-#   ]
-# }
+output "subnetworks_detailed" {
+  description = "The detailed list of subnetworks created in the VPC network, including secondary IP ranges."
+  value = [
+    for subnet in google_compute_subnetwork.vpc_subnets :
+    {
+      name    = subnet.name
+      region  = subnet.region
+      ip_cidr = subnet.ip_cidr_range
+      secondary_ip_ranges = subnet.secondary_ip_range != null ? [
+        for range in subnet.secondary_ip_range :
+        {
+          range_name    = range.range_name
+          ip_cidr_range = range.ip_cidr_range
+        }
+      ] : []
+    }
+  ]
+}

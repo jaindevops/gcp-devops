@@ -27,3 +27,46 @@ module "vpc_subnetwork" {
     }
   ]
 }
+
+module "cloud_nat_gateway" {
+  source     = "../modules/cloud_nat"
+  project_id = var.project_id
+  vpc_router = [
+    {
+      name         = "demo-router-us-central1"
+      network_name = module.vpc_network.network_name
+      region       = var.region
+    }
+  ]
+  cloud_nat = [
+    {
+      nat_name                           = "demo-cloud-nat-us-central1"
+      router_name                        = "demo-router-us-central1"
+      region                             = "us-central1"
+      source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+      nat_ip_allocate_option             = "MANUAL_ONLY"
+      nat_ips = [
+        "demo-nat-ip-1",
+      ]
+    },
+    # {
+    #   nat_name                           = "demo-cloud-nat-us-central1-secondary"
+    #   router_name                        = "demo-router-us-central1"
+    #   nat_ip_allocate_option             = "MANUAL_ONLY"
+    #   nat_ips                            = ["demo-nat-ip-2", "demo-nat-ip-3"]
+    #   region                             = "us-central1"
+    #   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+    #   subnetwork_ip_ranges_to_nat_list = [
+    #     {
+    #       subnetwork_name         = "demo-subnet-db"
+    #       source_ip_ranges_to_nat = ["PRIMARY_IP_RANGE"]
+    #     },
+    #     {
+    #       subnetwork_name          = "demo-subnet"
+    #       source_ip_ranges_to_nat  = ["LIST_OF_SECONDARY_IP_RANGES"]
+    #       secondary_ip_range_names = ["demo-gke-pods-range"]
+    #     }
+    #   ]
+    # }
+  ]
+}
