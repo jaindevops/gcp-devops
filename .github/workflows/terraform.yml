@@ -36,7 +36,7 @@ jobs:
   Run_Terraform:
     name: Terraform Plan/Apply
     # This "environment" line tells GitHub which folder of variables to open
-    environment: ${{ env.tf_env }}
+    environment: ${{ github.event.inputs.tf_env }}
     runs-on: ubuntu-latest
     defaults:
       run:
