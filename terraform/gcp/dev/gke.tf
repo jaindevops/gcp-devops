@@ -11,7 +11,7 @@ module "gke" {
   source     = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
   version    = "40.0.0"
   project_id = var.project_id
-  name       = "demo-cluster"
+  name       = "${local.name_prefix}-cluster"
   region     = var.region
   # zones                      = [local.primary_zone, local.secondary_zone]
   zones                      = [local.primary_zone]
@@ -37,7 +37,7 @@ module "gke" {
 
   node_pools = [
     {
-      name         = "demo-node-pool"
+      name         = "${local.name_prefix}-node-pool"
       machine_type = "e2-medium"
       # node_locations     = "${local.primary_zone}, ${local.secondary_zone}"
       node_locations     = "${local.primary_zone}"
@@ -57,7 +57,7 @@ module "gke" {
   node_pools_oauth_scopes = {
     all = []
 
-    demo-node-pool = [
+    "${local.name_prefix}-node-pool" = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
   }
@@ -65,7 +65,7 @@ module "gke" {
   node_pools_labels = {
     all = {}
 
-    demo-node-pool = merge(
+    "${local.name_prefix}-node-pool" = merge(
       {
         "node-label" = "demo-app"
       },
@@ -80,7 +80,7 @@ module "gke" {
   node_pools_metadata = {
     all = {}
 
-    demo-node-pool = {
+    "${local.name_prefix}-node-pool" = {
       block-project-ssh-keys = true
     }
   }
@@ -88,9 +88,9 @@ module "gke" {
   node_pools_taints = {
     all = []
 
-    # demo-node-pool = [
+    # "${local.name_prefix}-node-pool" = [
     #   {
-    #     key    = "demo-node-pool"
+    #     key    = "${local.name_prefix}-node-pool"
     #     value  = true
     #     effect = "PREFER_NO_SCHEDULE"
     #   },
