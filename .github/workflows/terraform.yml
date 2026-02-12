@@ -1,0 +1,76 @@
+name: Terraform Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      tf_action:
+        description: 'Select the Terraform action to perform plan or apply'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
+      tf_env:
+        description: 'Select the environment to deploy (dev, staging, prod)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+env:
+  terraform_version: 1.14.3
+  tf_env: ${{ github.event.inputs.tf_env }}
+  tf_action: ${{ github.event.inputs.tf_action }}
+  working_directory: terraform/gcp/${{ github.event.inputs.tf_env }}
+  
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  # Job to run terraform plan or apply based on user input from workflow_dispatch
+  Run_Terraform:
+    name: Terraform Plan/Apply
+    # This "environment" line tells GitHub which folder of variables to open
+    environment: ${{ github.event.inputs.tf_env }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.working_directory }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # - name: Authenticate to Google Cloud
+      #   uses: google-github-actions/auth@v2
+      #   with:
+      #     credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      # OIDC Authentication using Workload Identity Federation
+      - id: auth
+        name: Authenticate to Google Cloud using Workload Identity Federation
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/${{ vars.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github'
+          service_account: 'github-actions@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          version: ${{ env.terraform_version }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        if: env.tf_action == 'plan'
+        run: terraform plan -input=false
+
+      - name: Terraform Apply
+        if: env.tf_action == 'apply'
+        run: terraform apply -auto-approve
