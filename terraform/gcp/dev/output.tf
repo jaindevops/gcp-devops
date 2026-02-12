@@ -12,3 +12,8 @@ output "subnet_names" {
   description = "The names of the subnetworks created in the VPC network"
   value       = module.vpc_subnetwork.subnet_names
 }
+
+output "global_ip_addresses" {
+  description = "A map of global IP names to their assigned IP addresses."
+  value       = module.static_ips.global_ip_addresses
+}

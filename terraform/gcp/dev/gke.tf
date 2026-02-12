@@ -38,7 +38,7 @@ module "gke" {
   node_pools = [
     {
       name         = "${local.name_prefix}-node-pool"
-      machine_type = "e2-medium"
+      machine_type = "e2-standard-2"
       # node_locations     = "${local.primary_zone}, ${local.secondary_zone}"
       node_locations     = "${local.primary_zone}"
       initial_node_count = 1
